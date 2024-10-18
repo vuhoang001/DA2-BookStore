@@ -6,7 +6,7 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            component: () => import('@/views/admin/components/LayoutAdmin.vue'),
+            component: () => import('@/views/client/components/LayoutClient.vue'),
             children: [
                 {
                     path: '',
@@ -23,6 +23,41 @@ const router = createRouter({
                     path: '',
                     name: 'Dashboard',
                     component: () => import('@/views/admin/Dashboard.vue')
+                },
+                {
+                    path: 'book-manager',
+                    name: 'BookManager',
+                    component: () => import('@/views/admin/BookManager.vue')
+                },
+                {
+                    path: 'author-manager',
+                    name: 'AuthorManager',
+                    component: () => import('@/views/admin/AuthorManager.vue')
+                },
+                {
+                    path: 'genre-manager',
+                    name: 'GenreManager',
+                    component: () => import('@/views/admin/GenreManager.vue')
+                },
+                {
+                    path: 'cart-manager',
+                    name: 'CartManager',
+                    component: () => import('@/views/admin/CartManager.vue')
+                },
+                {
+                    path: 'content-manager',
+                    name: 'ContentManager',
+                    component: () => import('@/views/admin/ContentManager.vue')
+                },
+                {
+                    path: 'statistical',
+                    name: 'Statistical',
+                    component: () => import('@/views/admin/Statistical.vue')
+                },
+                {
+                    path: 'customer-manager',
+                    name: 'CustomerManager',
+                    component: () => import('@/views/admin/CustomerManager.vue')
                 }
             ]
         },

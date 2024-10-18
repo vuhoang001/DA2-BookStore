@@ -1,0 +1,1 @@
+<template>this is content manager</template>

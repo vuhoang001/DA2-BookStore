@@ -1,0 +1,1 @@
+<template>This is book manager</template>
