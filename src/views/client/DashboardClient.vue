@@ -26,26 +26,20 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      books: [
-        { title: 'Hát Giông Tâm Hồn', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain' },
-        { title: 'Thế Giới Này Làm Sao Để Yêu Nhau', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain' },
-        { title: 'Vô Nhất', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain    ' },
-        { title: 'Lam Đì', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain' },
-        { title: 'Và Đột Nhiên Gió Thổi', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain' },
-        { title: 'Đời Lưa Xung Đột', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain' },
-      ],
-      repeatedItems: [
-        { image: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain', text: 'Nếu cầu muốn một điều gì đó lớn, cả vũ trụ sẽ hiện thực giúp bạn điều đó, qua những dấu hiệu mà nếu cầu nhìn kỹ mới có thể nhận ra.' },
-        { image: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain', text: 'Nếu cầu muốn một điều gì đó lớn, cả vũ trụ sẽ hiện thực giúp bạn điều đó, qua những dấu hiệu mà nếu cầu nhìn kỹ mới có thể nhận ra.' },
-        { image: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain', text: 'Nếu cầu muốn một điều gì đó lớn, cả vũ trụ sẽ hiện thực giúp bạn điều đó, qua những dấu hiệu mà nếu cầu nhìn kỹ mới có thể nhận ra.' },
-        { image: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain', text: 'Nếu cầu muốn một điều gì đó lớn, cả vũ trụ sẽ hiện thực giúp bạn điều đó, qua những dấu hiệu mà nếu cầu nhìn kỹ mới có thể nhận ra.' },
-      ],
-    };
-  },
-};
-</script>
+<script setup>
+const books = [
+  { title: 'Hát Giông Tâm Hồn', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain' },
+  { title: 'Thế Giới Này Làm Sao Để Yêu Nhau', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain' },
+  { title: 'Vô Nhất', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain    ' },
+  { title: 'Lam Đì', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain' },
+  { title: 'Và Đột Nhiên Gió Thổi', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain' },
+  { title: 'Đời Lưa Xung Đột', cover: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain' },
+];
 
+const repeatedItems = [
+  { image: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain', text: 'Nếu cầu muốn một điều gì đó lớn, cả vũ trụ sẽ hiện thực giúp bạn điều đó, qua những dấu hiệu mà nếu cầu nhìn kỹ mới có thể nhận ra.' },
+  { image: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain', text: 'Nếu cầu muốn một điều gì đó lớn, cả vũ trụ sẽ hiện thực giúp bạn điều đó, qua những dấu hiệu mà nếu cầu nhìn kỹ mới có thể nhận ra.' },
+  { image: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain', text: 'Nếu cầu muốn một điều gì đó lớn, cả vũ trụ sẽ hiện thực giúp bạn điều đó, qua những dấu hiệu mà nếu cầu nhìn kỹ mới có thể nhận ra.' },
+  { image: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain', text: 'Nếu cầu muốn một điều gì đó lớn, cả vũ trụ sẽ hiện thực giúp bạn điều đó, qua những dấu hiệu mà nếu cầu nhìn kỹ mới có thể nhận ra.' },
+];
+</script>
