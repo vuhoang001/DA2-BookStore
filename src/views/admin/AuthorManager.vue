@@ -1,1 +1,155 @@
-<template>this is author manager </template>
+<template>
+    <div>
+        <div class="flex justify-between">
+            <div class="font-semibold text-2xl">Quản lý tác giả</div>
+            <div>
+                <Button label="Thêm mới" @click="openDialog('A')" icon="pi pi-plus"></Button>
+            </div>
+        </div>
+        <div class="card mt-5">
+            <DataTable :value="filteredAuthor" showGridlines paginator :rows="10">
+                <template #header>
+                    <div class="flex justify-end">
+                        <IconField>
+                            <InputIcon>
+                                <i class="pi pi-search"> </i>
+                            </InputIcon>
+                            <InputText v-model="filterAuthor" placeholder="Tìm kiếm từ ..."></InputText>
+                        </IconField>
+                    </div>
+                </template>
+                <template #empty> <div class="flex justify-center my-5">Không tìm thấy dữ liệu ...</div> </template>
+                <template #loading> Đang tải dữ liệu ... </template>
+                <!-- <Column header="Mã tác giả" field="_id"></Column> -->
+                <Column header="Ảnh" style="width: 10rem;">
+                    <template #body="{data}">
+                        <div class="flex justify-center">
+                            <Img width="100px" alt="Image" :src="data.authorImage" preview />
+                        </div>
+                        
+                    </template>
+                </Column>
+                <Column header="Tên tác giả" style="width: 15rem;" field="authorName"></Column>
+                <Column header="Thông tin tác giả" field="bio"></Column>
+                <Column header="" style="width: 8rem;">
+                    <template #body="{data}">
+                        <div class="flex justify-evenly">
+                        <Button icon="pi pi-pencil" severity="secondary" @click="openDialog('U', data)" text></Button>
+                        <Button icon="pi pi-trash" text severity="danger"</Button>
+                        </div>
+                        
+                    </template>
+                </Column>
+            </DataTable>
+        </div>
+    </div>
+
+    <Dialog style="width: 45%" :header="currentDialogMode == 'A' ? ' Thêm mới tác giả' : ' Chỉnh sửa tác giả'" v-model:visible="toggleDialog"> 
+        <div class="flex flex-col gap-3 mb-5">
+            <label for="userCode" class="font-semibold">Mã tác giả</label>
+            <InputText id="authorCode" class="flex-auto" autocomplete="off" v-model="payloadDialog._id" disabled="true"></InputText>
+        </div>
+        <div class="flex flex-col gap-3 mb-4">
+            <label for="username" class="font-semibold">Tên tác giả</label>
+            <InputText id="authorName" class="flex-auto" autocomplete="off" v-model="payloadDialog.authorName"></InputText>
+        </div>
+
+        <div class="flex flex-col gap-3 mb-4">
+            <label for="bio" class="font-semibold">Tiểu sử</label>
+            <Textarea style="height: 10rem;" v-model="payloadDialog.bio"></Textarea>
+        </div>
+
+        <div class="flex flex-row items-center gap-3 mb-4">
+            <label for="bio" class="font-semibold">Ảnh</label>
+             <FileUpload mode="basic" @select="onFileSelect" customUpload auto severity="secondary" class="p-button-outlined" />
+            <img v-if="src" :src="payloadDialog.authorImage" alt="Image" class="shadow-md rounded-xl w-full sm:w-64" style="filter: grayscale(100%)" />
+        </div>
+
+        <div class="flex justify-end gap-3 mb-4">
+            <Button label="Hủy" severity="secondary"></Button>
+            <Button label="Lưu" severity="success"></Button>
+        </div>
+    </Dialog>
+    
+</template>
+
+
+<script setup>
+import {ref, computed, onMounted} from 'vue'
+import API from '../../api/api-main'
+
+const filterAuthor = ref('')
+const toggleDialog = ref(false)
+const currentDialogMode = ref('A')
+const isLoading = ref(false)
+const payloadDialog = ref({
+    _id: '', 
+    authorName: '', 
+    bio: '', 
+    authorImage: null
+})
+const authorData = ref([
+])
+
+
+const GetAllAuthor = async () => {
+    isLoading.value = true
+    try {
+        const res = await API.get('author')
+        authorData.value = res.data.metadata
+    } catch (err) {
+        console.log(err)
+    } finally {
+        isLoading.value = false
+    }
+}
+
+onMounted(() => {
+    GetAllAuthor()
+    console.log(payloadDialog.value)
+})
+
+const filteredAuthor = computed(() => {
+    return authorData.value.filter(item => {
+        return (
+            item._id.toLowerCase().includes(filterAuthor.value.toLowerCase()) ||
+            item.authorName.toLowerCase().includes(filterAuthor.value.toLowerCase()) || 
+            item.bio.toLowerCase().includes(filterAuthor.value.toLowerCase())
+        )
+    })
+})
+
+
+const openDialog = (mode, data = null) => {
+    toggleDialog.value = true
+    currentDialogMode.value = mode
+
+    if (mode == 'U' && data) {
+        payloadDialog.value._id = data._id 
+        payloadDialog.value.authorName = data.authorName
+        payloadDialog.value.bio = data.bio
+        payloadDialog.value.authorImage = data.authorImage
+
+    } else {
+        resetForm()
+    }
+}
+
+const src = ref(null)
+function onFileSelect(event) {
+    const file = event.files[0];
+    const reader = new FileReader();
+
+    reader.onload = async (e) => {
+        src.value = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+}
+
+const resetForm = () => {
+    payloadDialog.value.authorCode = '' 
+    payloadDialog.value.authorName = '' 
+    payloadDialog.value.bio = ''
+}
+</script>
