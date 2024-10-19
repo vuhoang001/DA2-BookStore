@@ -8,7 +8,7 @@ class API {
         try {
             const res = await axios.get(url, {
                 headers: authHeader(),
-                timeout: 1000
+                timeout: 5000
             });
             return res;
         } catch (error) {
@@ -21,7 +21,7 @@ class API {
         try {
             const res = await axios.post(url, params, {
                 headers: authHeader(),
-                timeout: 1000
+                timeout: 5000
             });
             return res;
         } catch (err) {
@@ -34,7 +34,7 @@ class API {
         try {
             const res = await axios.patch(url, params, {
                 headers: authHeader(),
-                timeout: 1000
+                timeout: 5000
             });
             return res;
         } catch (err) {
@@ -47,7 +47,7 @@ class API {
         try {
             const res = await axios.put(url, params, {
                 headers: authHeader(),
-                timeout: 1000
+                timeout: 5000
             });
             return res;
         } catch (err) {
@@ -60,7 +60,7 @@ class API {
         try {
             const res = await axios.delete(url, params, {
                 headers: authHeader(),
-                timeout: 1000
+                timeout: 5000
             });
             return res;
         } catch (err) {
