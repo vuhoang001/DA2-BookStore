@@ -12,6 +12,11 @@ const router = createRouter({
                     path: '',
                     name: 'DashboardClient',
                     component: () => import('@/views/client/DashboardClient.vue')
+                },
+                {
+                    path: 'author',
+                    name: 'AuthorClient',
+                    component: () => import('@/views/client/AuthorClient.vue')
                 }
             ]
         },
