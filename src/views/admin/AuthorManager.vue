@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="card mt-5">
-            <DataTable :value="filteredAuthor" showGridlines paginator :rows="10">
+            <DataTable :value="filteredAuthor" showGridlines paginator :rows="5" :rowsPerPageOptions="[5, 10, 20]">
                 <template #header>
                     <div class="flex justify-end">
                         <IconField>
@@ -100,7 +100,7 @@ const GetAllAuthor = async () => {
     isLoading.value = true;
     try {
         const res = await API.get('author');
-        authorData.value = res.data.metadata;
+        authorData.value = Array.isArray(res.data.metadata) ? res.data.metadata : [];
     } catch (err) {
         console.log(err);
     } finally {
@@ -142,6 +142,7 @@ onMounted(() => {
 });
 
 const filteredAuthor = computed(() => {
+    if (!Array.isArray(authorData.value)) return [];
     return authorData.value.filter((item) => {
         return item._id.toLowerCase().includes(filterAuthor.value.toLowerCase()) || item.authorName.toLowerCase().includes(filterAuthor.value.toLowerCase()) || item.bio.toLowerCase().includes(filterAuthor.value.toLowerCase());
     });
