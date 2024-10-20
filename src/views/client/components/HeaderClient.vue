@@ -1,13 +1,13 @@
 <template>
-    <header class="flex items-center justify-between p-6 bg-white shadow-md">
+    <header class="flex items-center justify-between p-6 bg-white shadow-md custom-width">
       <!-- Logo -->
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center space-x-2 ml-5">
         <img src="" alt="Logo" class="h-10 w-10" />
         <span class="text-lg font-bold">BookStore</span>
       </div>
   
       <!-- Navigation Links -->
-      <nav class="flex space-x-14   ">
+      <nav class="flex space-x-16   ">
         <a href="#" class="text-gray-700 hover:text-green-500">
           Trang chủ
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 inline">
@@ -26,12 +26,12 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
           </svg>
         </a>
-        <a href="#" class="text-gray-700 hover:text-green-500">
+        <router-link to="/author" class="text-gray-700 hover:text-green-500">
           Tác giả
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 inline">
             <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
           </svg>
-        </a>
+        </router-link>
         <a href="#" class="text-gray-700 hover:text-green-500">
           Cuộc thi
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 inline">
@@ -87,5 +87,5 @@
   </script>
   
   <style scoped>
-  /* Add any additional styles here */
-  </style>
+
+</style>
