@@ -26,7 +26,7 @@
                 <Column header="Ảnh" style="width: 10rem">
                     <template #body="{ data }">
                         <div class="flex justify-center">
-                            <Img width="100px" alt="Image" :src="data.authorImage" preview />
+                            <img style="width: 100px; height: 100px" alt="Image" :src="data.authorImage" />
                         </div>
                     </template>
                 </Column>
@@ -100,7 +100,9 @@ const GetAllAuthor = async () => {
     isLoading.value = true;
     try {
         const res = await API.get('author');
-        authorData.value = Array.isArray(res.data.metadata) ? res.data.metadata : [];
+        if (res && res.data) {
+            authorData.value = Array.isArray(res.data.metadata) ? res.data.metadata : [];
+        }
     } catch (err) {
         console.log(err);
     } finally {
@@ -109,7 +111,6 @@ const GetAllAuthor = async () => {
 };
 
 const confirmDelete = async (id) => {
-    console.log(id);
     confirm.require({
         message: 'Bạn có chắc muốn xóa bản ghi này không ?',
         header: 'Thông báo',
