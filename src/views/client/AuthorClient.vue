@@ -1,6 +1,6 @@
 <template>
   <div class="author-frame">
-    <div class="author-info">
+    <div class="author-info ml-5">
       <div class="info-content">
         <h2 class="author-name">{{ author.name }}</h2>
         <p class="author-description">{{ author.description }}</p>
@@ -32,7 +32,7 @@ const author = {
   background-color: #f5f5f5;
   border-radius: 8px;
   overflow: hidden;
-  height: 700px;
+  height: 430px;
 }
 
 .author-info {
