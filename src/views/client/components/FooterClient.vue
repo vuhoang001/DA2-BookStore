@@ -7,12 +7,14 @@
         <a href="#" class="text-black"><svg class="h-6 w-6 text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />  <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" /></svg></a>
         <a href="#" class="text-black"><svg class="h-6 w-6 text-purple-600"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg></a>
       </div>
-      <div class="flex items-center mr-60   ">
+      <div class="flex items-center mr-60">
         <span class="mr-20 text-white">Nhận thông tin từ chúng tôi</span>
-        <input type="email" placeholder="Nhập email ưu đãi" class="p-1  w-40 text-sm h-10">
-        <button style="background-color: rgba(96, 117, 55, 1);" class="text-white p-1  h-10">Đăng kí</button>
+        <div class="flex">
+          <InputText v-model="value3" type="text" class="h-10 px-2" placeholder="Nhận email ưu đãi" />
+          <button class="bg-[#607537] text-white px-4 h-10">Đăng kí</button>
+        </div>
       </div>
-    ~</div>
+    </div>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
       <div class="ml-10">
         <img src="" alt="Logo" class="mb-2">
