@@ -22,7 +22,6 @@
                 </template>
                 <template #empty> <div class="flex justify-center my-5">Không tìm thấy dữ liệu ...</div> </template>
                 <template #loading> Đang tải dữ liệu ... </template>
-                <!-- <Column header="Mã tác giả" field="_id"></Column> -->
                 <Column header="Ảnh" style="width: 10rem">
                     <template #body="{ data }">
                         <div class="flex justify-center">
