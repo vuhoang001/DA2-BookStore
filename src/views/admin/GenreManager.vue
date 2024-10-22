@@ -36,18 +36,25 @@
     </div>
 
     <Dialog v-model:visible="toggleDialog" :header="currentDialog == 'A' ? 'Thêm thể loại' : 'Chỉnh sửa thể loại'" style="width: 45%">
-        <div class="flex flex-col gap-3 mb-5">
-            <label for="genreName" class="font-semibold">Tên thể loại</label>
-            <InputText v-model="payloadDialog.genreName" id="genreName" class="flex-auto" autocomplete="off"></InputText>
-        </div>
-        <div class="flex flex-col gap-3 mb-5">
-            <label for="genreDescription" class="font-semibold"> Mô tả thể loại</label>
-            <InputText id="genreDescription" v-model="payloadDialog.genreDescription" class="flex-auto" autocomplete="off"></InputText>
-        </div>
-        <div class="flex justify-end gap-3 mb-4">
-            <Button label="Hủy" severity="secondary"></Button>
-            <Button label="Lưu" @click="saveDialog(currentDialog)" severity="success"></Button>
-        </div>
+        <template v-if="isLoading">
+            <div class="flex justify-center items-center h-[50rem]">
+                <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
+            </div>
+        </template>
+        <template v-else>
+            <div class="flex flex-col gap-3 mb-5">
+                <label for="genreName" class="font-semibold">Tên thể loại</label>
+                <InputText v-model="payloadDialog.genreName" id="genreName" class="flex-auto" autocomplete="off"></InputText>
+            </div>
+            <div class="flex flex-col gap-3 mb-5">
+                <label for="genreDescription" class="font-semibold"> Mô tả thể loại</label>
+                <InputText id="genreDescription" v-model="payloadDialog.genreDescription" class="flex-auto" autocomplete="off"></InputText>
+            </div>
+            <div class="flex justify-end gap-3 mb-4">
+                <Button label="Hủy" severity="secondary"></Button>
+                <Button label="Lưu" @click="saveDialog(currentDialog)" severity="success"></Button>
+            </div>
+        </template>
     </Dialog>
 </template>
 
@@ -62,6 +69,7 @@ const toast = useToast();
 
 const filterGenre = ref('');
 const toggleDialog = ref(false);
+const isLoading = ref(false);
 const genreDatas = ref([]);
 const currentDialog = ref('A');
 const payloadDialog = ref({
@@ -71,6 +79,7 @@ const payloadDialog = ref({
     slug: ''
 });
 
+const clearDialogData = JSON.stringify(payloadDialog.value);
 //Datatable
 onMounted(() => {
     GetAllGenre();
@@ -122,52 +131,34 @@ const confirmDelete = async (slug) => {
 
 // Dialog
 const resetForm = () => {
-    payloadDialog.value._id = '';
-    payloadDialog.value.genreDescription = '';
-    (payloadDialog.value.genreName = ''), (payloadDialog.value.slug = '');
+    payloadDialog.value = JSON.parse(clearDialogData);
 };
 const openDialog = (mode, data = null) => {
     toggleDialog.value = true;
     currentDialog.value = mode;
+    const fields = ['_id', 'genreName', 'genreDescription', 'slug'];
     if (mode == 'U' && data) {
-        payloadDialog.value._id = data._id;
-        payloadDialog.value.genreName = data.genreName;
-        payloadDialog.value.genreDescription = data.genreDescription;
-        payloadDialog.value.slug = data.slug;
+        fields.forEach((item) => (payloadDialog.value[item] = data[item]));
     } else {
         resetForm();
     }
 };
 
 const saveDialog = async (mode) => {
-    console.log(mode);
-    if (mode == 'U') {
-        try {
-            const res = await API.update(`genre/${payloadDialog.value.slug}`, payloadDialog.value);
-            toggleDialog.value = false;
-            await GetAllGenre();
-            if (res && res.status == 200) {
-                toast.add({ severity: 'info', summary: 'Thành Công', detail: 'Thao tác thành công', life: 3000 });
-            } else {
-                toast.add({ severity: 'error', summary: 'Thất bại', detail: 'Thao tác thất bại', life: 3000 });
-            }
-        } catch (error) {
-            console.log(error);
-            toast.add({ severity: 'error', summary: 'Thất bại', detail: 'Thao tác thất bại', life: 3000 });
+    let url = mode === 'U' ? `genre/${payloadDialog.value.slug}` : `genre`;
+    let funcAPI = mode === 'U' ? API.update(url, payloadDialog.value) : API.create(url, payloadDialog.value);
+    try {
+        isLoading.value = true;
+        const res = await funcAPI;
+        if (res && res.status) {
+            toast.add({ severity: 'info', summary: 'Thành Công', detail: 'Thao tác thành công', life: 3000 });
         }
-    } else {
-        try {
-            const res = await API.create('/genre', payloadDialog.value);
-            toggleDialog.value = false;
-            await GetAllGenre();
-            if (res && res.status == 200) {
-                toast.add({ severity: 'info', summary: 'Thành Công', detail: res.data.message, life: 3000 });
-            } else {
-                toast.add({ severity: 'error', summary: 'Thất bại', detail: 'Thao tác thất bại', life: 3000 });
-            }
-        } catch (error) {
-            toast.add({ severity: 'error', summary: 'Thất bại', detail: error, life: 3000 });
-        }
+    } catch (error) {
+        toast.add({ severity: 'error', summary: 'Thất bại', detail: 'Thao tác thất bại', life: 3000 });
+    } finally {
+        GetAllGenre();
+        isLoading.value = false;
+        toggleDialog.value = false;
     }
 };
 // End dialog

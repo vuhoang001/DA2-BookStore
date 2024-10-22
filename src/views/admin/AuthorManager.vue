@@ -44,33 +44,36 @@
     </div>
 
     <Dialog style="width: 45%" :header="currentDialogMode == 'A' ? ' Thêm mới tác giả' : ' Chỉnh sửa tác giả'" v-model:visible="toggleDialog">
-        <ProgressSpinner v-if="isLoading" />
-        <div class="flex flex-col gap-3 mb-5">
-            <label for="userCode" class="font-semibold">Mã tác giả</label>
-            <InputText id="authorCode" class="flex-auto" autocomplete="off" v-model="payloadDialog._id" disabled="true"></InputText>
-        </div>
-        <div class="flex flex-col gap-3 mb-4">
-            <label for="username" class="font-semibold">Tên tác giả</label>
-            <InputText id="authorName" class="flex-auto" autocomplete="off" v-model="payloadDialog.authorName"></InputText>
-        </div>
+        <template v-if="isLoading">
+            <div class="flex justify-center items-center h-[50rem]">
+                <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
+            </div>
+        </template>
+        <template v-else>
+            <div class="flex flex-col gap-3 mb-5">
+                <label for="userCode" class="font-semibold">Mã tác giả</label>
+                <InputText id="authorCode" class="flex-auto" autocomplete="off" v-model="payloadDialog._id" disabled="true"></InputText>
+            </div>
+            <div class="flex flex-col gap-3 mb-4">
+                <label for="username" class="font-semibold">Tên tác giả</label>
+                <InputText id="authorName" class="flex-auto" autocomplete="off" v-model="payloadDialog.authorName"></InputText>
+            </div>
 
-        <div class="flex flex-col gap-3 mb-6">
-            <label for="bio" class="font-semibold">Tiểu sử</label>
-            <Textarea style="height: 10rem" v-model="payloadDialog.bio"></Textarea>
-        </div>
+            <div class="flex flex-col gap-3 mb-6">
+                <label for="bio" class="font-semibold">Tiểu sử</label>
+                <Textarea style="height: 10rem" v-model="payloadDialog.bio"></Textarea>
+            </div>
 
-        <div class="flex flex-row items-center gap-3 mb-4">
-            <label for="bio" class="font-semibold">Ảnh</label>
-            <!-- <FileUpload mode="basic" @select="onFileSelect" customUpload auto severity="secondary" class="p-button-outlined" /> -->
-            <input type="file" @change="UploadFileLocal($event, 0)" />
-            <!-- <img v-if="payloadDialog.authorImage" :src="payloadDialog.authorImage" alt="Image" class="shadow-md w-[100px] rounded-xl" style="filter: grayscale(100%)" /> -->
-            <!-- <img v-if="payloadDialog.authorImage" :src="URL.createObjectURL(payloadDialog.authorImage)" alt="Image Preview" class="shadow-md w-[100px] rounded-xl" /> -->
-        </div>
+            <div class="flex flex-row items-center gap-3 mb-4">
+                <label for="bio" class="font-semibold">Ảnh</label>
+                <input type="file" @change="UploadFileLocal($event, 0)" />
+            </div>
 
-        <div class="flex justify-end gap-3 mb-4">
-            <Button label="Hủy" severity="secondary" @click="resetForm()"></Button>
-            <Button label="Lưu" severity="success" @click="saveDialog(currentDialogMode)"></Button>
-        </div>
+            <div class="flex justify-end gap-3 mb-4">
+                <Button label="Hủy" severity="secondary" @click="resetForm()"></Button>
+                <Button label="Lưu" severity="success" @click="saveDialog(currentDialogMode)"></Button>
+            </div>
+        </template>
     </Dialog>
 </template>
 
@@ -93,6 +96,7 @@ const payloadDialog = ref({
     authorImage: null,
     slug: ''
 });
+const clearDialogData = JSON.stringify(payloadDialog.value);
 const authorData = ref([]);
 
 const GetAllAuthor = async () => {
@@ -151,13 +155,11 @@ const filteredAuthor = computed(() => {
 const openDialog = (mode, data = null) => {
     toggleDialog.value = true;
     currentDialogMode.value = mode;
-
+    const fields = ['_id', 'authorName', 'bio', 'authorImage', 'slug'];
     if (mode == 'U' && data) {
-        payloadDialog.value._id = data._id;
-        payloadDialog.value.authorName = data.authorName;
-        payloadDialog.value.bio = data.bio;
-        payloadDialog.value.authorImage = data.authorImage;
-        payloadDialog.value.slug = data.slug;
+        fields.forEach((item) => {
+            payloadDialog.value[item] = data[item];
+        });
     } else {
         resetForm();
     }
@@ -169,47 +171,33 @@ const UploadFileLocal = async (event, index) => {
 };
 
 const saveDialog = async (mode) => {
-    if (mode == 'U') {
-        let formData = new FormData();
-        formData.append('files', payloadDialog.value.authorImage);
-        formData.append('authorName', payloadDialog.value.authorName);
-        formData.append('bio', payloadDialog.value.bio);
-        try {
-            await API.update(`/author/${payloadDialog.value.slug}`, formData);
-            isLoading.value = true;
-            toggleDialog.value = false;
-            await GetAllAuthor();
+    let formData = new FormData();
+    const fields = ['authorName', 'bio'];
+
+    fields.forEach((item) => {
+        formData.append(item, payloadDialog.value[item]);
+    });
+    formData.append('files', payloadDialog.value.authorImage);
+
+    let url = mode == 'U' ? `author/${payloadDialog.value.slug}` : `author`;
+    let funcAPI = mode == 'U' ? API.update(url, formData) : API.create(url, formData);
+
+    try {
+        isLoading.value = true;
+        const res = await funcAPI;
+        if (res && res.status == 200) {
             toast.add({ severity: 'info', summary: 'Thành Công', detail: 'Thao tác thành công', life: 3000 });
-        } catch (error) {
-            toast.add({ severity: 'error', summary: 'Thất bại', detail: 'Thao tác thất bại', life: 3000 });
-            console.log(error);
-        } finally {
-            isLoading.value = false;
         }
-    } else {
-        let formData = new FormData();
-        formData.append('files', payloadDialog.value.authorImage);
-        formData.append('authorName', payloadDialog.value.authorName);
-        formData.append('bio', payloadDialog.value.bio);
-        try {
-            await API.create('/author', formData);
-            isLoading.value = true;
-            toggleDialog.value = false;
-            await GetAllAuthor();
-            toast.add({ severity: 'info', summary: 'Thành Công', detail: 'Thao tác thành công', life: 3000 });
-        } catch (error) {
-            toast.add({ severity: 'error', summary: 'Thất bại', detail: 'Thao tác thất bại', life: 3000 });
-            console.log(error);
-        } finally {
-            isLoading.value = false;
-        }
+    } catch (err) {
+        toast.add({ severity: 'error', summary: 'Thất bại', detail: 'Thao tác thất bại', life: 3000 });
+    } finally {
+        GetAllAuthor();
+        isLoading.value = false;
+        toggleDialog.value = false;
     }
 };
 
 const resetForm = () => {
-    payloadDialog.value._id = '';
-    payloadDialog.value.authorName = '';
-    payloadDialog.value.bio = '';
-    payloadDialog.value.authorImage = null;
+    payloadDialog.value = JSON.parse(clearDialogData);
 };
 </script>
