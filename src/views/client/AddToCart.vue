@@ -170,7 +170,7 @@ align-items: center;
 }
 
 .book-details-list {
-  border: 3px solid;
+  border: 1px solid;
   padding: 10px; 
   border-radius: 5px;
   justify-items: center;

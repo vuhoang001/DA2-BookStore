@@ -19,9 +19,14 @@ const router = createRouter({
                     component: () => import('@/views/client/AuthorClient.vue')
                 },
                 {
-                    path:'/AddToCart',
+                    path:'/addtocart',
                     name:'AdđToCart',
                     component:() =>import("@/views/client/AddToCart.vue")
+                },
+                {
+                    path:'/cartclient',
+                    name:'CartClient',
+                    component:() =>import("@/views/client/CartClient.vue")
                 }
             ]
         },
