@@ -27,6 +27,14 @@ const router = createRouter({
                     path:'/cartclient',
                     name:'CartClient',
                     component:() =>import("@/views/client/CartClient.vue")
+                },   {
+                    path:'/payclient',
+                    name:'PayClient',
+                    component:() =>import("@/views/client/PayClient.vue")
+                }, {
+                    path:'/myacc',
+                    name:'MyAccout',
+                    component:() =>import("@/views/client/MyAcc.vue")
                 }
             ]
         },
