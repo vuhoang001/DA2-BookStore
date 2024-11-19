@@ -25,7 +25,7 @@
                 <Column header="Ảnh" style="width: 10rem">
                     <template #body="{ data }">
                         <div class="flex justify-center">
-                            <img style="width: 100px; height: 100px" alt="Image" :src="data.authorImage" />
+                            <img crossorigin="anonymous" style="width: 100px; height: 100px" alt="Image" :src="data.authorImage" />
                         </div>
                     </template>
                 </Column>

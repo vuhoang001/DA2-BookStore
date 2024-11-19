@@ -1,92 +1,28 @@
 <template>
-  <div class="author-frame">
-    <div class="author-info ml-5">
-      <div class="info-content">
-        <h2 class="author-name">{{ author.name }}</h2>
-        <p class="author-description">{{ author.description }}</p>
-        <div class="social-links">
-          <span >Chia sẻ ngay:</span>
-          <a href="#" class="facebook">Facebook</a>
-          <a href="#" class="instagram">Instagram</a>
-          <a href="#" class="youtube">YouTube</a>
+    <div>
+        <div class="flex my-10">
+            <div class="basis-1/2 flex items-center">
+                <div class="flex flex-col gap-4">
+                    <label class="block text-3xl font-bold uppercase" for="">{{ author[0].name }}</label>
+                    <span class="block">{{ author[0].description }}</span>
+                </div>
+            </div>
+            <div class="basis-1/2">
+                <div class="flex justify-center">
+                    <img class="w-[250px] h-[250px] rounded-full object-cover" :src="author[0].image" alt="" />
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-    <div class="author-image">
-      <img :src="author.imageUrl" :alt="author.name">
-    </div>
-  </div>
 </template>
 
 <script setup>
-const author = {
-  name: 'KHANH LE',
-  description: 'Sinh năm 1978, hiện đang giảng dạy đại học ngành kỹ thuật, nghiên cứu về hệ thống kế hạ thống điều khiển và tự động hóa. ...',
-  imageUrl: 'https://th.bing.com/th/id/R.af1bcf25049caf328b8da7eb6d566d2f?rik=0sB4X%2fb5vbmkKg&riu=http%3a%2f%2fi.huffpost.com%2fgadgets%2fslideshows%2f306562%2fslide_306562_2651832_free.jpg&ehk=U0zTbRTIOo6fuYHhQarm3wF097%2b3Q2Jsp0OGdVspJw0%3d&risl=&pid=ImgRaw&r=0'
-}
+const author = [
+    {
+        name: 'Khanh le',
+        description: 'Sinh năm 1978, hiện đang giảng dạy đại học ngành kỹ thuật, nghiên cứu về hệ thống kế hạ thống điều khiển và tự động hóa. ...',
+        image: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain',
+        text: 'Nếu cầu muốn một iều gì đó lớn, cả vũ trụ sẽ hin thc giúp bạn điều đó, qua những dấu hiệu mà nếu cầu nhìn kỹ mới có thể nhận ra.'
+    }
+];
 </script>
-
-<style scoped>
-.author-frame {
-  display: flex;
-  background-color: #f5f5f5;
-  border-radius: 8px;
-  overflow: hidden;
-  height: 430px;
-}
-
-.author-info {
-  flex: 1;
-  max-width: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.info-content {
-  padding: 20px;
-  max-width: 90%;
-}
-
-.author-name {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.author-description {
-  font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 20px;
-}
-
-.social-links {
-  margin-top: 20px;
-}
-
-.social-links a {
-  display: inline-block;
-  margin-right: 10px;
-  text-decoration: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: white;
-}
-
-.facebook { background-color: #3b5998; }
-.instagram { background-color: #e4405f; }
-.youtube { background-color: #ff0000; }
-
-.author-image {
-  flex: 1;
-  max-width: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.author-image img {
-  width: 500px;
-  height: 281px;
-  object-fit: cover;
-}
-</style>

@@ -1,7 +1,13 @@
 <template>
-    <header-client></header-client>
-    <router-view></router-view>
-    <footer-client> </footer-client>
+    <div>
+        <header-client></header-client>
+    </div>
+    <div class="mx-auto w-[1228px]">
+        <router-view></router-view>
+    </div>
+    <div class="">
+        <footer-client> </footer-client>
+    </div>
 </template>
 
 <script setup>
