@@ -14,7 +14,7 @@ const router = createRouter({
                     component: () => import('@/views/client/DashboardClient.vue')
                 },
                 {
-                    path: '/author',
+                    path: '/author/:slug',
                     name: 'AuthorClient',
                     component: () => import('@/views/client/AuthorClient.vue')
                 },
@@ -22,6 +22,11 @@ const router = createRouter({
                     path: 'detail-book/:slug',
                     name: 'DetailBook',
                     component: () => import('@/views/client/DetailBook.vue')
+                },
+                {
+                    path: '/author',
+                    name: 'authors',
+                    component: () => import('@/views/client/DetailAuthor.vue')
                 }
             ]
         },

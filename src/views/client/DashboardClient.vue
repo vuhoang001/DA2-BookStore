@@ -28,9 +28,11 @@
         <div>
             <div class="flex justify-between text-xl">
                 <label class="uppercase"> Các tác giả</label>
-                <label class="hover:text-green-400 hover:underline text-base"
-                    >Xem thêm <span><i class="pi pi-angle-right"></i></span
-                ></label>
+                <router-link :to="{ name: 'authors' }">
+                    <label class="hover:text-green-400 hover:underline text-base"
+                        >Xem thêm <span><i class="pi pi-angle-right"></i></span
+                    ></label>
+                </router-link>
             </div>
             <div class="mt-10">
                 <div class="flex flex-row justify-evenly">
@@ -38,7 +40,7 @@
                         <img crossorigin="anonymous" class="w-[240px] h-[240px] rounded-full object-cover" :src="item.authorImage" alt="" />
 
                         <span class="text-center mt-4 text-xl hover:underline cursor-pointer"
-                            ><router-link :to="`author/` + `${item.slug}`">{{ item.authorName }} </router-link>
+                            ><router-link :to="{ name: 'AuthorClient', params: { slug: item.slug } }">{{ item.authorName }} </router-link>
                         </span>
                     </div>
                 </div>
@@ -55,7 +57,7 @@
             <div class="mt-10">
                 <div class="flex flex-row justify-evenly">
                     <div v-for="item in book" class="flex flex-col">
-                        <img crossorigin="anonymous" class="m-8 shadow-2xl w-[80px] h-[80px]" :src="item.imageBook" alt="" />
+                        <img crossorigin="anonymous" class="m-8 shadow-2xl w-[200px] h-[250px]" :src="item.imageBook" alt="" />
                         <div class="m-8 mt-0 flex flex-col gap-2">
                             <router-link :to="{ name: 'DetailBook', params: { slug: item.slug } }">
                                 <span class="text-xl hover:underline cursor-pointer">{{ item.bookName }}</span>
