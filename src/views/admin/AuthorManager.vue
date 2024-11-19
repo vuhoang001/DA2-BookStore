@@ -20,7 +20,9 @@
                         </IconField>
                     </div>
                 </template>
-                <template #empty> <div class="flex justify-center my-5">Không tìm thấy dữ liệu ...</div> </template>
+                <template #empty>
+                    <div class="flex justify-center my-5">Không tìm thấy dữ liệu ...</div>
+                </template>
                 <template #loading> Đang tải dữ liệu ... </template>
                 <Column header="Ảnh" style="width: 10rem">
                     <template #body="{ data }">
@@ -34,8 +36,10 @@
                 <Column header="" style="width: 8rem">
                     <template #body="{ data }">
                         <div class="flex justify-evenly">
-                            <Button icon="pi pi-pencil" severity="secondary" @click="openDialog('U', data)" text></Button>
-                            <Button icon="pi pi-trash" @click="confirmDelete(data.slug)" text severity="danger"></Button>
+                            <Button icon="pi pi-pencil" severity="secondary" @click="openDialog('U', data)"
+                                text></Button>
+                            <Button icon="pi pi-trash" @click="confirmDelete(data.slug)" text
+                                severity="danger"></Button>
                         </div>
                     </template>
                 </Column>
@@ -43,20 +47,24 @@
         </div>
     </div>
 
-    <Dialog style="width: 45%" :header="currentDialogMode == 'A' ? ' Thêm mới tác giả' : ' Chỉnh sửa tác giả'" v-model:visible="toggleDialog">
+    <Dialog style="width: 45%" :header="currentDialogMode == 'A' ? ' Thêm mới tác giả' : ' Chỉnh sửa tác giả'"
+        v-model:visible="toggleDialog">
         <template v-if="isLoading">
             <div class="flex justify-center items-center h-[50rem]">
-                <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
+                <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent"
+                    animationDuration=".5s" aria-label="Custom ProgressSpinner" />
             </div>
         </template>
         <template v-else>
             <div class="flex flex-col gap-3 mb-5">
                 <label for="userCode" class="font-semibold">Mã tác giả</label>
-                <InputText id="authorCode" class="flex-auto" autocomplete="off" v-model="payloadDialog._id" disabled="true"></InputText>
+                <InputText id="authorCode" class="flex-auto" autocomplete="off" v-model="payloadDialog._id"
+                    disabled="true"></InputText>
             </div>
             <div class="flex flex-col gap-3 mb-4">
                 <label for="username" class="font-semibold">Tên tác giả</label>
-                <InputText id="authorName" class="flex-auto" autocomplete="off" v-model="payloadDialog.authorName"></InputText>
+                <InputText id="authorName" class="flex-auto" autocomplete="off" v-model="payloadDialog.authorName">
+                </InputText>
             </div>
 
             <div class="flex flex-col gap-3 mb-6">
@@ -78,10 +86,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import API from '../../api/api-main';
-import { useToast } from 'primevue/usetoast';
 import { useConfirm } from 'primevue/useconfirm';
+import { useToast } from 'primevue/usetoast';
+import { computed, onMounted, ref } from 'vue';
+import API from '../../api/api-main';
 const confirm = useConfirm();
 const toast = useToast();
 
@@ -137,7 +145,7 @@ const confirmDelete = async (id) => {
                 toast.add({ severity: 'error', summary: 'Thất bại', detail: 'Thao tác thất bại', life: 3000 });
             }
         },
-        reject: () => {}
+        reject: () => { }
     });
 };
 
