@@ -3,13 +3,19 @@
         <!-- Logo -->
         <div class="flex items-center space-x-2 ml-5">
             <img src="" alt="Logo" class="h-10 w-10" />
-            <span class="text-3xl font-bold">BookStore</span>
+            <router-link :to="{ name: 'DashboardClient' }">
+                <span class="text-3xl font-bold">BookStore</span>
+            </router-link>
         </div>
 
         <!-- Navigation Links -->
         <div class="flex gap-11">
             <div v-for="item in header">
-                <span class="cursor-pointer text-xl hover:text-green-400">{{ item.title }}</span>
+                <span class="cursor-pointer text-xl hover:text-green-400">
+                    <router-link :to="{ name: item.name }">
+                        {{ item.title }}
+                    </router-link></span
+                >
             </div>
         </div>
         <!-- Search and Icons -->
@@ -28,10 +34,10 @@
 
 <script setup>
 const header = [
-    { title: ' Trang chủ', icon: '' },
+    { title: ' Trang chủ', icon: '', name: 'DashboardClient' },
     { title: ' Tin sách', icon: '' },
     { title: ' Sách hot', icon: '' },
-    { title: ' Tác giả', icon: '' },
+    { title: ' Tác giả', icon: '', name: 'authors' },
     { title: ' Cuộc thi', icon: '' },
     { title: ' Về Bookstore', icon: '' },
     { title: ' Liên hệ', icon: '' }

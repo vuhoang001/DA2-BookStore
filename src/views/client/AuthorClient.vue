@@ -17,12 +17,17 @@
 </template>
 
 <script setup>
-const author = [
-    {
-        name: 'Khanh le',
-        description: 'Sinh năm 1978, hiện đang giảng dạy đại học ngành kỹ thuật, nghiên cứu về hệ thống kế hạ thống điều khiển và tự động hóa. ...',
-        image: 'https://th.bing.com/th/id/OIP.fQniPJalhw4DFi9JHQxFfAHaKV?rs=1&pid=ImgDetMain',
-        text: 'Nếu cầu muốn một iều gì đó lớn, cả vũ trụ sẽ hin thc giúp bạn điều đó, qua những dấu hiệu mà nếu cầu nhìn kỹ mới có thể nhận ra.'
+import { ref, onBeforeMount } from 'vue';
+import API from '../../api/api-main'
+
+const data = ref(null);
+
+const GetData = async () => {
+    try {
+        // const res = await API.get("author")
+    } catch (error) {
+        console.log(error);
     }
-];
+};
+onBeforeMount(() => {});
 </script>

@@ -1,6 +1,5 @@
 <template>
     <div>
-        {{ DetailBook }}
         <div class="flex p-6">
             <div class="basis-1/2 flex justify-center">
                 <img class="w-[60%] h-auto" :src="author.image" alt="" />

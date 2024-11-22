@@ -1,5 +1,6 @@
 import AppLayout from '@/layout/AppLayout.vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import auth from '@/middlewares/auth.middleware';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -7,16 +8,17 @@ const router = createRouter({
         {
             path: '/',
             component: () => import('@/views/client/components/LayoutClient.vue'),
+            // meta: {
+            //     middleware: [auth]
+            // },
             children: [
                 {
                     path: '',
                     name: 'DashboardClient',
+                    // meta: {
+                    //     middleware: [auth]
+                    // },
                     component: () => import('@/views/client/DashboardClient.vue')
-                },
-                {
-                    path: '/author/:slug',
-                    name: 'AuthorClient',
-                    component: () => import('@/views/client/AuthorClient.vue')
                 },
                 {
                     path: 'detail-book/:slug',
@@ -27,17 +29,25 @@ const router = createRouter({
                     path: '/author',
                     name: 'authors',
                     component: () => import('@/views/client/DetailAuthor.vue')
+                },
+                {
+                    path: '/author/:slug',
+                    name: 'AuthorClient',
+                    component: () => import('@/views/client/AuthorClient.vue')
                 }
             ]
         },
         {
             path: '/admin',
             component: AppLayout,
+            meta: {
+                middleware: [auth]
+            },
             children: [
                 {
                     path: '',
                     name: 'Dashboard',
-                    component: () => import('@/views/admin/Dashboard.vue')
+                    component: () => import('@/views/admin/Statistical.vue')
                 },
                 {
                     path: 'book-manager',
@@ -104,5 +114,31 @@ const router = createRouter({
         }
     ]
 });
+function nextFactory(context, middleware, index) {
+    const subsequentMiddleware = middleware[index];
+    if (!subsequentMiddleware) return context.next;
+    return (...parameters) => {
+        context.next(...parameters);
 
+        const nextMiddleware = nextFactory(context, middleware, index + 1);
+        subsequentMiddleware({ ...context, next: nextMiddleware });
+    };
+}
+
+router.beforeEach((to, from, next) => {
+    if (to.meta.middleware) {
+        const middleware = Array.isArray(to.meta.middleware) ? to.meta.middleware : [to.meta.middleware];
+
+        const context = {
+            from,
+            next,
+            router,
+            to
+        };
+        const nextMiddleware = nextFactory(context, middleware, 1);
+
+        return middleware[0]({ ...context, next: nextMiddleware });
+    }
+    return next();
+});
 export default router;

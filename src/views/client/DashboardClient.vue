@@ -62,7 +62,9 @@
                             <router-link :to="{ name: 'DetailBook', params: { slug: item.slug } }">
                                 <span class="text-xl hover:underline cursor-pointer">{{ item.bookName }}</span>
                             </router-link>
-                            <span class="text-base hover:underline cursor-pointer">{{ item.authorBook.authorName }}</span>
+                            <router-link :to="{ name: 'AuthorClient', params: { slug: item.authorBook.slug } }">
+                                <span class="text-base hover:underline cursor-pointer">{{ item.authorBook.authorName }}</span>
+                            </router-link>
                             <span class="text-base hover:underline cursor-pointer">{{ item.price }}</span>
                             <Rating v-model="item.rating" />
                         </div>
