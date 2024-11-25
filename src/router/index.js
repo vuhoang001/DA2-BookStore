@@ -34,6 +34,22 @@ const router = createRouter({
                     path: '/author/:slug',
                     name: 'AuthorClient',
                     component: () => import('@/views/client/AuthorClient.vue')
+                },
+                {
+                    path: '/cart',
+                    name: 'cart',
+                    meta: {
+                        middleware: [auth]
+                    },
+                    component: () => import('@/views/client/CartClient.vue')
+                },
+                {
+                    path: '/checkout',
+                    name: 'checkout',
+                    meta: {
+                        middleware: [auth]
+                    },
+                    component: () => import('@/views/client/Checkout.vue')
                 }
             ]
         },
@@ -85,6 +101,19 @@ const router = createRouter({
                     component: () => import('@/views/admin/CustomerManager.vue')
                 }
             ]
+        },
+        {
+            path: '/checkout',
+            name: 'checkout',
+            meta: {
+                middleware: [auth]
+            },
+            component: () => import('@/views/client/Checkout.vue')
+        },
+        {
+            path: '/payment-success',
+            name: 'paymentsuccess',
+            component: () => import('@/views/client/PaymentSuccess.vue')
         },
         {
             path: '/landing',

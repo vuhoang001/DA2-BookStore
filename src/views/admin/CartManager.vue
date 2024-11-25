@@ -17,22 +17,24 @@
             </template>
             <template #empty> <div class="flex justify-center my-5">Không tìm thấy dữ liệu ...</div> </template>
             <template #loading> Đang tải dữ liệu ... </template>
-            <!-- <Column selection-mode="multiple" header></Column> -->
             <Column expander></Column>
             <Column header="Mã đơn hàng" field="_id"></Column>
             <Column header=" Thời gian " field="createdAt"></Column>
             <Column header=" Tên khách hàng " field="user.email"></Column>
-            <Column header=" Số điện thoại" field="user.phone"></Column>
+            <Column header=" Số điện thoại" field="phoneReceive"></Column>
             <Column header=" Tổng tiền" field=""></Column>
             <Column header=" Trạng thái thanh toán">
                 <template #body="{ data }">
                     <div>
-                        <span v-if="data.paymentMethod">Chuyển khoản</span>
-                        <span v-else> Tiền mặt</span>
+                        <Tag :severity="data.orderStatus == false ? 'danger' : 'success'"> {{ data.orderStatus == false ? 'Chưa thanh toán' : 'Đã thanh toán' }}</Tag>
                     </div>
                 </template>
             </Column>
-            <Column header=" Phương thức thanh toán" field=""></Column>
+            <Column header=" Phương thức thanh toán" field="">
+                <template #body="{ data }">
+                    <Tag :severity="data.paymentMethod == 'T' ? 'success' : 'info'"> {{ data.paymentMethod == 'T' ? 'Chuyển khoản' : 'Tiền mặt' }}</Tag>
+                </template>
+            </Column>
             <template #expansion="{ data }">
                 <div class="card">
                     <div class="mb-4">
@@ -62,9 +64,8 @@
                             <Divider></Divider>
                             <div class="flex">
                                 <div class="w-40 text-lg">Số điện thoại</div>
-                                <div>
-                                </div>
-                                    {{ data.phoneReceive }}
+                                <div></div>
+                                {{ data.phoneReceive }}
                             </div>
                             <Divider></Divider>
                             <div class="flex">
@@ -107,15 +108,12 @@
                     </div>
                 </div>
             </template>
-            <!-- <Column>
-                <template #body="{ data }"> </template>
-            </Column> -->
         </DataTable>
     </div>
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from 'vue';
+import { ref, onMounted } from 'vue';
 import API from '../../api/api-main';
 
 const expandedRows = ref();
@@ -123,15 +121,15 @@ const cartData = ref([]);
 
 const GetCartData = async () => {
     try {
-        const res = await API.get('cart');
+        const res = await API.get('checkout/all');
+        console.log(res.data.metadata);
         cartData.value = res.data.metadata;
-        console.log(cartData.value);
     } catch (error) {
         console.log(error);
     }
 };
 
-onBeforeMount(() => {
+onMounted(() => {
     GetCartData();
 });
 </script>

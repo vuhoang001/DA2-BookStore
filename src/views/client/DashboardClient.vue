@@ -57,13 +57,14 @@
             <div class="mt-10">
                 <div class="flex flex-row justify-evenly">
                     <div v-for="item in book" class="flex flex-col">
-                        <img crossorigin="anonymous" class="m-8 shadow-2xl w-[200px] h-[250px]" :src="item.imageBook" alt="" />
+                        <img crossorigin="anonymous" class="m-8 shadow-2xl w-[200px] h-[250px] object-cover" :src="item.imageBook" alt="" />
+
                         <div class="m-8 mt-0 flex flex-col gap-2">
                             <router-link :to="{ name: 'DetailBook', params: { slug: item.slug } }">
-                                <span class="text-xl hover:underline cursor-pointer">{{ item.bookName }}</span>
+                                <span class="text-xl hover:underline cursor-pointer hover:text-green-700">{{ item.bookName }}</span>
                             </router-link>
-                            <router-link :to="{ name: 'AuthorClient', params: { slug: item.authorBook.slug } }">
-                                <span class="text-base hover:underline cursor-pointer">{{ item.authorBook.authorName }}</span>
+                            <router-link v-if="item.authorBook !== null" :to="{ name: 'AuthorClient', params: { slug: item.authorBook?.slug } }">
+                                <span class="text-base hover:underline cursor-pointer hover:text-green-700">{{ item.authorBook.authorName }}</span>
                             </router-link>
                             <span class="text-base hover:underline cursor-pointer">{{ item.price }}</span>
                             <Rating v-model="item.rating" />

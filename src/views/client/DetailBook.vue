@@ -1,4 +1,5 @@
 <template>
+    <Toast />
     <div>
         <div class="flex p-6">
             <div class="basis-1/2 flex justify-center">
@@ -31,10 +32,12 @@
 
                     <div class="flex gap-3">
                         <div class="basis-6/12">
-                            <Button label="Thêm vào giỏ" class="w-full" outlined></Button>
+                            <Button label="Thêm vào giỏ" @click="addCart(DetailBook, action)" class="w-full" outlined></Button>
                         </div>
                         <div class="basis-6/12">
-                            <Button label="Mua ngay" class="w-full"></Button>
+                            <router-link :to="{ name: 'cart' }">
+                                <Button label="Mua ngay" @click="addCart(DetailBook, action)" class="w-full"></Button>
+                            </router-link>
                         </div>
                     </div>
                 </div>
@@ -77,7 +80,9 @@
 import { ref, onBeforeMount } from 'vue';
 import { useRoute } from 'vue-router';
 import API from '../../api/api-main';
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 const router = useRoute();
 const DetailBook = ref({});
 
@@ -115,6 +120,21 @@ const ClickQuantity = (action) => {
     }
 };
 
+const addCart = async (detailBook) => {
+    if (payload.value.quantity == 0 || payload.value.quantity > DetailBook.value.quantity) {
+        toast.add({ severity: 'error', summary: 'Thêm vào giỏ', detail: 'Số lượng sách không hợp lệ', life: 3000 });
+        return;
+    }
+    try {
+        const res = await API.create('cart/add?a=1', [{ productId: detailBook._id, quantity: payload.value.quantity }]);
+        console.log(res.data);
+        if (res && res.data.status == 200) {
+            toast.add({ severity: 'success', summary: 'Thêm vào giỏ', detail: 'Thành công', life: 3000 });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
 // skip
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('vi-VN', {
