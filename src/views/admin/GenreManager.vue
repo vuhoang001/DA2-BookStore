@@ -22,7 +22,7 @@
             </template>
             <template #empty> <div class="flex justify-center my-5">Không tìm thấy dữ liệu ...</div> </template>
             <template #loading> Đang tải dữ liệu ... </template>
-            <Column header="Tên thể loại" field="genreName"></Column>
+            <Column header="Tên thể loại" style="width: 20rem" field="genreName"></Column>
             <Column header="Mô tả thể loại" field="genreDescription"></Column>
             <Column header="" style="width: 8rem">
                 <template #body="{ data }">
@@ -51,7 +51,7 @@
                 <InputText id="genreDescription" v-model="payloadDialog.genreDescription" class="flex-auto" autocomplete="off"></InputText>
             </div>
             <div class="flex justify-end gap-3 mb-4">
-                <Button label="Hủy" severity="secondary"></Button>
+                <Button label="Hủy" @click="toggleDialog = false" severity="secondary"></Button>
                 <Button label="Lưu" @click="saveDialog(currentDialog)" severity="success"></Button>
             </div>
         </template>
@@ -133,6 +133,18 @@ const confirmDelete = async (slug) => {
 const resetForm = () => {
     payloadDialog.value = JSON.parse(clearDialogData);
 };
+
+const validate = () => {
+    const fields = ['genreName', 'genreDescription'];
+    for (var field of fields) {
+        if (typeof payloadDialog.value[field] == 'string' && payloadDialog.value[field] == '') {
+            toast.add({ severity: 'error', summary: 'Thất bại', detail: 'Nhập thiếu trường. Vui lòng nhập dầy đủ!', life: 3000 });
+            return false;
+        }
+    }
+    return true;
+};
+
 const openDialog = (mode, data = null) => {
     toggleDialog.value = true;
     currentDialog.value = mode;
@@ -145,6 +157,10 @@ const openDialog = (mode, data = null) => {
 };
 
 const saveDialog = async (mode) => {
+    if (mode !== 'U' && !validate()) {
+        toggleDialog.value = true;
+        return;
+    }
     let url = mode === 'U' ? `genre/${payloadDialog.value.slug}` : `genre`;
     let funcAPI = mode === 'U' ? API.update(url, payloadDialog.value) : API.create(url, payloadDialog.value);
     try {

@@ -37,7 +37,7 @@
             <div class="mt-10">
                 <div class="flex flex-row justify-evenly">
                     <div v-for="item in authorsBook" class="flex flex-col">
-                        <img crossorigin="anonymous" class="w-[240px] h-[240px] rounded-full object-cover" :src="item.authorImage" alt="" />
+                        <img crossorigin="anonymous" class="w-[240px] h-[240px] rounded-full object-contain" :src="item.authorImage" alt="" />
 
                         <span class="text-center mt-4 text-xl hover:underline cursor-pointer"
                             ><router-link :to="{ name: 'AuthorClient', params: { slug: item.slug } }">{{ item.authorName }} </router-link>
@@ -50,23 +50,30 @@
         <div>
             <div class="flex justify-between text-xl">
                 <label class="uppercase"> Sách mới</label>
-                <label class="hover:text-green-400 hover:underline text-base"
-                    >Xem thêm <span><i class="pi pi-angle-right"></i></span
-                ></label>
+                <router-link :to="{ name: 'books' }">
+                    <label class="hover:text-green-400 hover:underline text-base"
+                        >Xem thêm <span><i class="pi pi-angle-right"></i></span
+                    ></label>
+                </router-link>
             </div>
             <div class="mt-10">
                 <div class="flex flex-row justify-evenly">
-                    <div v-for="item in book" class="flex flex-col">
+                    <div v-for="item in book" class="flex flex-col relative">
                         <img crossorigin="anonymous" class="m-8 shadow-2xl w-[200px] h-[250px] object-cover" :src="item.imageBook" alt="" />
 
+                        <div class="absolute top-4 right-4">
+                            <div v-if="item.discount !== 0" class="w-10 h-10 rounded-full flex justify-center items-center bg-red-600 text-white">{{ item.discount }}%</div>
+                        </div>
                         <div class="m-8 mt-0 flex flex-col gap-2">
                             <router-link :to="{ name: 'DetailBook', params: { slug: item.slug } }">
-                                <span class="text-xl hover:underline cursor-pointer hover:text-green-700">{{ item.bookName }}</span>
+                                <div class="overflow-hidden max-w-[200px] text-left text-ellipsis">
+                                    <span class="text-xl hover:underline cursor-pointer hover:text-green-700">{{ item.bookName }}</span>
+                                </div>
                             </router-link>
                             <router-link v-if="item.authorBook !== null" :to="{ name: 'AuthorClient', params: { slug: item.authorBook?.slug } }">
                                 <span class="text-base hover:underline cursor-pointer hover:text-green-700">{{ item.authorBook.authorName }}</span>
                             </router-link>
-                            <span class="text-base hover:underline cursor-pointer">{{ item.price }}</span>
+                            <span class="text-base hover:underline cursor-pointer">{{ currency(item.price, { symbol: 'đ', separator: ',' }) }} đ</span>
                             <Rating v-model="item.rating" />
                         </div>
                     </div>
@@ -117,6 +124,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import API from '../../api/api-main';
+import currency from 'currency.js';
 const authorsBook = ref([]);
 const book = ref([]);
 const GetAllAuthors = async () => {

@@ -55,7 +55,8 @@
                     </div>
 
                     <span>
-                        {{ currency(item.book.price, { symbol: 'đ' }).format() }}
+                        <!-- {{ item.book }} -->
+                        {{ currency(item.book.price * ((100 - item.book.discount) / 100), { symbol: 'đ' }).format() }}
                     </span>
                 </div>
                 <Divider></Divider>
@@ -170,13 +171,14 @@ const GetOrder = async () => {
     orderData.value = res.data;
     user.value = res.data.metadata.user;
     orderData.value = res.data.metadata.products;
+    console.log(orderData.value);
     totalAmount();
 };
 
 const totalAmount = () => {
     let result = 0;
     for (let item of orderData.value) {
-        result += item.book.price * item.quantity;
+        result += item.book.price * ((100 - item.book.discount) / 100) * item.quantity;
     }
     payload.value.totalAmount = result;
 };

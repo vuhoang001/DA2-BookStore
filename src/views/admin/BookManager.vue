@@ -21,7 +21,13 @@
             </template>
             <template #empty> <div class="flex justify-center my-5">Không tìm thấy dữ liệu ...</div> </template>
             <template #loading> Đang tải dữ liệu ... </template>
-            <Column header="Tên sách" style="min-width: 20rem" field="bookName"></Column>
+            <Column header="Tên sách" style="min-width: 20rem" field="bookName">
+                <template #body="{ data }">
+                    <span class="">
+                        {{ data.bookName }}
+                    </span>
+                </template>
+            </Column>
             <Column header="Ảnh" style="min-width: 10rem">
                 <template #body="{ data }">
                     <div class="flex justify-center">
@@ -38,11 +44,9 @@
                 </template>
             </Column>
             <Column header="Thể loại" style="min-width: 8rem" field="genre.genreName"></Column>
-            <Column header="Số lượng" style="min-width: 7rem">
+            <Column header="Số lượng" style="min-width: 10rem">
                 <template #body="{ data }">
-                    <div class="flex justify-end">
-                        {{ data.quantity }}
-                    </div>
+                    <div class="flex justify-end">{{ data.quantity }} quyển</div>
                 </template>
             </Column>
             <Column header="Giá" style="min-width: 10rem">
@@ -62,8 +66,14 @@
                     </div>
                 </template>
             </Column>
-            <Column header="Kích thước" style="min-width: 8rem" field="size"></Column>
-            <Column header="Đánh giá" style="min-width: 7rem" field="rating"></Column>
+            <Column header="Kích thước" style="min-width: 8rem" field="size"> </Column>
+            <Column header="Đánh giá" style="min-width: 7rem" field="rating">
+                <template #body="{ data }">
+                    <div class="text-center">
+                        {{ data.rating }}
+                    </div>
+                </template>
+            </Column>
             <Column header="" style="width: 8rem">
                 <template #body="{ data }">
                     <div class="flex justify-evenly">
@@ -75,69 +85,79 @@
         </DataTable>
     </div>
 
-    <Dialog style="width: 45%" :header="currentDialogMode == 'A' ? 'Thêm mới sách' : 'Chỉnh sửa sách'" v-model:visible="toggleDialog">
+    <Dialog style="width: 85%" :header="currentDialogMode == 'A' ? 'Thêm mới sách' : 'Chỉnh sửa sách'" v-model:visible="toggleDialog">
         <template v-if="isLoading">
             <div class="flex justify-center items-center h-[50rem]">
                 <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
             </div>
         </template>
         <template v-else>
-            <div class="flex flex-col gap-3 mb-5">
-                <label for="bookName">Mã sách</label>
-                <InputText id="bookName" class="flex-auto" autocomplete="false" v-model="payloadDialog._id" readonly></InputText>
-            </div>
-            <div class="flex flex-col gap-3 mb-5">
-                <label for="bookName">Tên sách</label>
-                <InputText id="bookName" class="flex-auto" autocomplete="false" v-model="payloadDialog.bookName"></InputText>
-            </div>
-            <div class="flex flex-col gap-3 mb-5">
-                <label for="authorBook"> Tác giả của sách</label>
-                <Select v-model="payloadDialog.authorBook" :options="authorData" optionValue="_id" optionLabel="authorName" placeholder="Chọn tác giả"></Select>
-            </div>
-            <div class="flex flex-col gap-3 mb-5">
-                <label for="genreBook"> Thể loại sách </label>
-                <Select v-model="payloadDialog.genre" :options="genreData" optionLabel="genreName" optionValue="_id" placeholder="Chọn thể loại"></Select>
-            </div>
-            <div class="flex flex-col gap-3 mb-5">
-                <label for="bookDescription"> Mô tả sách</label>
-                <Textarea v-model="payloadDialog.bookDescription" rows="5"></Textarea>
-            </div>
-            <div class="flex flex-col gap-3 mb-5">
+            <div class="flex gap-10">
+                <div class="basis-1/2">
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="bookName">Mã sách</label>
+                        <InputText id="bookName" class="flex-auto" autocomplete="false" v-model="payloadDialog._id" readonly></InputText>
+                    </div>
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="bookName">Tên sách</label>
+                        <InputText id="bookName" class="flex-auto" autocomplete="false" v-model="payloadDialog.bookName"></InputText>
+                    </div>
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="authorBook"> Tác giả của sách</label>
+                        <Select v-model="payloadDialog.authorBook" :options="authorData" optionValue="_id" optionLabel="authorName" placeholder="Chọn tác giả"></Select>
+                    </div>
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="genreBook"> Thể loại sách </label>
+                        <Select v-model="payloadDialog.genre" :options="genreData" optionLabel="genreName" optionValue="_id" placeholder="Chọn thể loại"></Select>
+                    </div>
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="bookDescription"> Mô tả sách</label>
+                        <Textarea v-model="payloadDialog.bookDescription" rows="10"></Textarea>
+                    </div>
+                    <!-- <div class="flex flex-col gap-3 mb-5">
                 <label for="summary"> Tóm tắt sách</label>
                 <Textarea rows="5" v-model="payloadDialog.summary"></Textarea>
-            </div>
-            <div class="flex flex-col gap-3 mb-5">
-                <label for="quantity"> Số lượng</label>
-                <InputNumber v-model="payloadDialog.quantity"></InputNumber>
-            </div>
-
-            <div class="flex flex-col gap-3 mb-5">
-                <label for="price"> Giá sách</label>
-                <InputNumber v-model="payloadDialog.price" mode="currency" currency="VND" locale="vi-VN"></InputNumber>
-            </div>
-            <div class="flex flex-col gap-3 mb-5">
-                <label for="totalPages"> Số trang sách</label>
-                <InputNumber v-model="payloadDialog.totalPages"></InputNumber>
-            </div>
-            <div class="flex flex-col gap-3 mb-5">
-                <label for="size">Kích thước</label>
-                <InputText v-model="payloadDialog.size"></InputText>
-            </div>
-            <div class="flex flex-col gap-3 mb-5">
-                <label for="date">Ngày phát hành</label>
-                <DatePicker v-model="payloadDialog.releaseTime" dateFormat="dd/mm/yy"></DatePicker>
-            </div>
-            <div class="flex flex-col gap-3 mb-5">
-                <label for="bookName">Đánh giá</label>
-                <InputNumber v-model="payloadDialog.rating" :min="0" :max="5" showButtons fluid></InputNumber>
-            </div>
-            <div class="flex flex-row items-center gap-3 mb-4">
-                <label for="bio" class="font-semibold">Ảnh</label>
-                <input type="file" @change="UploadFileLocal($event, 0)" />
+            </div> -->
+                </div>
+                <div class="basis-1/2">
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="quantity"> Số lượng</label>
+                        <InputNumber v-model="payloadDialog.quantity"></InputNumber>
+                    </div>
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="price"> Giá sách</label>
+                        <InputNumber v-model="payloadDialog.price" mode="currency" currency="VND" locale="vi-VN"></InputNumber>
+                    </div>
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="price"> Giá sách nhập</label>
+                        <InputNumber v-model="payloadDialog.importPrice" mode="currency" currency="VND" locale="vi-VN"></InputNumber>
+                    </div>
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="totalPages"> Số trang sách</label>
+                        <InputNumber v-model="payloadDialog.totalPages"></InputNumber>
+                    </div>
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="size">Kích thước</label>
+                        <InputText v-model="payloadDialog.size"></InputText>
+                    </div>
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="date">Ngày phát hành</label>
+                        <DatePicker v-model="payloadDialog.releaseTime" dateFormat="dd/mm/yy"></DatePicker>
+                    </div>
+                    <div class="flex flex-col gap-3 mb-5">
+                        <label for="bookName">Đánh giá</label>
+                        <InputNumber v-model="payloadDialog.rating" :min="0" :max="5" showButtons fluid></InputNumber>
+                    </div>
+                    <div class="flex flex-row items-center gap-3 mb-4">
+                        <label for="bio" class="font-semibold">Ảnh</label>
+                        <input type="file" @change="UploadFileLocal($event, 0)" />
+                    </div>
+                </div>
             </div>
 
             <div class="flex justify-end gap-3 mb-4">
-                <Button label="Hủy" severity="secondary" @click="resetForm()"></Button>
+                <!-- <Button label="Hủy" severity="secondary" @click="resetForm()"></Button> -->
+                <Button label="Hủy" severity="secondary" @click="toggleDialog = false"></Button>
                 <Button label="Lưu" severity="success" @click="saveDialog(currentDialogMode)"></Button>
             </div>
         </template>
@@ -165,7 +185,7 @@ const genreData = ref([]);
 const payloadDialog = ref({
     _id: '',
     bookName: '',
-    imageBook: null,
+    imageBook: '',
     authorBook: '',
     genre: '',
     bookDescription: '',
@@ -176,10 +196,21 @@ const payloadDialog = ref({
     releaseTime: 0,
     size: '',
     rating: 0,
-    slug: ''
+    slug: '',
+    importPrice: 0
 });
 const clearDialogData = JSON.stringify(payloadDialog.value);
-// Datatable
+
+const validate = () => {
+    const fields = ['bookName', 'authorBook', 'genre', 'bookDescription', 'quantity', 'price', 'releaseTime', 'size', 'importPrice'];
+    for (var field of fields) {
+        if ((typeof payloadDialog.value[field] == 'string' && payloadDialog.value[field] == '') || (typeof payloadDialog.value[field] == 'number' && payloadDialog.value[field] == 0)) {
+            toast.add({ severity: 'error', summary: 'Lỗi', detail: `Nhập thiếu trường. Vui lòng nhập đầy đủ!`, life: 3000 });
+            return false;
+        }
+    }
+    return true;
+};
 onMounted(() => {
     GetAllBooks();
     GetAllAuthor();
@@ -245,8 +276,12 @@ const UploadFileLocal = async (event, index) => {
 };
 
 const saveDialog = async (mode) => {
+    if (!validate()) {
+        toggleDialog.value = true;
+        return;
+    }
     let formData = new FormData();
-    const fields = ['bookName', 'authorBook', 'genre', 'bookDescription', 'summary', 'quantity', 'price', 'totalPages', 'releaseTime', 'size', 'rating'];
+    const fields = ['bookName', 'authorBook', 'genre', 'bookDescription', 'summary', 'quantity', 'price', 'totalPages', 'releaseTime', 'size', 'rating', 'importPrice'];
 
     fields.forEach((item) => {
         formData.append(item, payloadDialog.value[item]);

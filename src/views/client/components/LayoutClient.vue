@@ -2,7 +2,7 @@
     <div>
         <header-client></header-client>
     </div>
-    <div class="mx-auto w-[1350px]">
+    <div class="mx-auto w-[1350px] mt-10">
         <router-view></router-view>
     </div>
     <div class="">

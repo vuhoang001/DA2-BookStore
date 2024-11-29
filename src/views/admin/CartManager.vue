@@ -19,10 +19,16 @@
             <template #loading> Đang tải dữ liệu ... </template>
             <Column expander></Column>
             <Column header="Mã đơn hàng" field="_id"></Column>
-            <Column header=" Thời gian " field="createdAt"></Column>
+            <Column header=" Thời gian " field="createdAt" style="width: 12rem">
+                <template #body="{ data }">
+                    {{ format(data.createdAt, 'HH:MM dd/MM/yyyy') }}
+                </template>
+            </Column>
             <Column header=" Tên khách hàng " field="user.email"></Column>
             <Column header=" Số điện thoại" field="phoneReceive"></Column>
-            <Column header=" Tổng tiền" field=""></Column>
+            <Column header=" Tổng tiền" field="totalAmount">
+                <template #body="{ data }">{{ currency(data.totalAmount, { symbol: 'đ', separator: ',' }).format() }}</template>
+            </Column>
             <Column header=" Trạng thái thanh toán">
                 <template #body="{ data }">
                     <div>
@@ -32,7 +38,7 @@
             </Column>
             <Column header=" Phương thức thanh toán" field="">
                 <template #body="{ data }">
-                    <Tag :severity="data.paymentMethod == 'T' ? 'success' : 'info'"> {{ data.paymentMethod == 'T' ? 'Chuyển khoản' : 'Tiền mặt' }}</Tag>
+                    <Tag :severity="data.paymentMethod == 'T' ? 'success' : 'info'"> {{ data.paymentMethod == 'T' ? 'ZaloPay' : 'COD' }}</Tag>
                 </template>
             </Column>
             <template #expansion="{ data }">
@@ -52,7 +58,8 @@
 
                             <div class="flex">
                                 <div class="w-40 text-lg">Thời gian</div>
-                                <div>{{ data.createdAt }}</div>
+                                <!-- <div>{{ new Date(data.createdAt).toLocaleDateString('vi') }}</div> -->
+                                {{ format(data.createdAt, 'HH:MM dd/MM/yyyy') }}
                             </div>
                             <Divider></Divider>
                             <div class="flex">
@@ -77,8 +84,8 @@
                             <div class="flex">
                                 <div class="w-52 text-lg">Phương thức thanh toán</div>
                                 <div>
-                                    <span v-if="data.paymentMethod">Chuyển khoản</span>
-                                    <span v-else> Tiền mặt</span>
+                                    <span v-if="data.paymentMethod == 'C'">COD</span>
+                                    <span v-else>ZaloPay</span>
                                 </div>
                             </div>
 
@@ -98,10 +105,14 @@
                             <Column header="Mã sách" field="_id"></Column>
                             <Column header="Tên sách" field="book.bookName"></Column>
                             <Column header="Số lượng" field="quantity"></Column>
-                            <Column header="Đơn giá" field="book.price"></Column>
+                            <Column header="Đơn giá" field="book.price">
+                                <template #body="{ data }">
+                                    {{ currency(data.book.price, { symbol: 'đ', separator: ',' }).format() }}
+                                </template>
+                            </Column>
                             <Column header="Thành tiền">
                                 <template #body="{ data }">
-                                    {{ data.book.price * data.quantity }}
+                                    {{ currency(data.book.price * data.quantity, { symbol: 'đ', separator: ',' }).format() }}
                                 </template>
                             </Column>
                         </DataTable>
@@ -115,6 +126,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import API from '../../api/api-main';
+import { format, formatDate } from 'date-fns';
+import currency from 'currency.js';
 
 const expandedRows = ref();
 const cartData = ref([]);

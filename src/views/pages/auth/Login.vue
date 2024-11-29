@@ -1,9 +1,11 @@
 <script setup>
 import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
+import { useToast } from 'primevue/usetoast';
 import { ref, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
+const toast = useToast();
 const email = ref('');
 const password = ref('');
 const checked = ref(false);
@@ -18,7 +20,7 @@ const Login = () => {
 
     store.dispatch('auth/login', user).then((res) => {
         if (!res.status) {
-            console.log('error');
+            toast.add({ severity: 'error', summary: ' Lỗi đăng nhập', detail: 'Tài khoản hoặc mật khẩu sai.', life: 3000 });
         } else {
             if (res.user.metadata.information.roles == 'A') {
                 router.push('/admin');
@@ -31,6 +33,7 @@ const Login = () => {
 </script>
 
 <template>
+    <Toast />
     <FloatingConfigurator />
     <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
         <div class="flex flex-col items-center justify-center">

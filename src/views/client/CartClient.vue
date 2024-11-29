@@ -1,47 +1,52 @@
 <template>
     <Toast />
+    <loading v-if="loadingPage"></loading>
     <div class="my-5">
         <div><span class="text-3xl font-semibold text-green-500"> Giỏ hàng </span></div>
         <div class="card mt-5">
             <DataTable v-model:selection="selectedProduct" show-gridlines :value="payload">
                 <template #empty> <div class="flex justify-center my-5">Không tìm thấy dữ liệu ...</div> </template>
-                <Column selection-mode="multiple" header-style="width: 3rem"></Column>
                 <Column header="Thông tin sản phẩm" field="book._id" style="max-width: 300px">
                     <template #body="{ data }">
-                        <router-link :to="{ name: 'DetailBook', params: { slug: data.book.slug } }">
-                            <div class="flex items-center gap-5">
-                                <img crossorigin="anonymous" :src="data.book.imageBook" alt="" class="w-[80px] h-[120px]" />
-                                <span>
-                                    {{ data.book.bookName }}
-                                </span>
-                            </div>
-                        </router-link>
+                        <div class="flex items-center justify-between">
+                            <router-link :to="{ name: 'DetailBook', params: { slug: data.book.slug } }">
+                                <div class="flex items-center gap-5">
+                                    <img crossorigin="anonymous" :src="data.book.imageBook" alt="" class="w-[80px] h-[120px] hover:shadow-md" />
+                                    <span class="cursor-pointer hover:underline">
+                                        {{ data.book.bookName }}
+                                    </span>
+                                </div>
+                            </router-link>
+                            <span class="block text-red-500 text-sm hover:underline cursor-pointer" @click="Delete(data.book._id)"> Xóa </span>
+                        </div>
                     </template>
                 </Column>
-                <Column header="Đơn giá" field="book.price"></Column>
-                <Column header="Số lượng" field="quantity" style="max-width: 150px">
+                <Column header="Đơn giá" field="book.price">
+                    <template #body="{ data }"> {{ currency(data.book.price * ((100 - data.book.discount) / 100), { symbol: 'đ', separator: ',' }).format() }}</template>
+                </Column>
+                <Column header="Số lượng" field="quantity" style="max-width: 100px">
                     <template #body="{ data, index }">
                         <InputGroup>
                             <Button icon="pi pi-minus" @click="ClickQuantity('m', data, index)" severity="danger" outlined />
                             <InputText v-model="payload[index].quantity" placeholder="Vote" />
                             <Button icon="pi pi-plus" @click="ClickQuantity('a', data, index)" severity="info" outlined />
                         </InputGroup>
+                        <div class="text-right">
+                            <span class="text-sm text-gray-400 italic text-right"> Số lượng trong kho: {{ data.book.quantity }} </span>
+                        </div>
                     </template>
                 </Column>
                 <Column header="Thành tiền">
-                    <template #body="{ data }">
-                        {{ data.book.price * data.quantity }}
-                    </template>
+                    <template #body="{ data }"> {{ currency(data.book.price * ((100 - data.book.discount) / 100) * data.quantity, { symbol: 'đ', separator: ',' }).format() }}</template>
                 </Column>
                 <ColumnGroup type="footer">
                     <Row>
-                        <Column footer="Totals:" :colspan="4" footerStyle="text-align:right" />
+                        <Column footer="Totals:" :colspan="3" footerStyle="text-align:right" />
                         <Column :footer="totalAmount" />
                     </Row>
                 </ColumnGroup>
             </DataTable>
             <div class="flex gap-4 my-5 justify-end">
-                <Button label="Xóa" icon="pi pi-trash" severity="danger" @click="Delete()"></Button>
                 <Button label="Cập nhật" icon="pi pi-shopping-cart" severity="info" @click="Update()"></Button>
                 <Button label="Thanh toán" @click="checkout()" icon="pi pi-shopping-cart"></Button>
             </div>
@@ -55,6 +60,8 @@ import API from '../../api/api-main';
 import { useStore } from 'vuex';
 import { useToast } from 'primevue/usetoast';
 import { useRouter } from 'vue-router';
+import currency from 'currency.js';
+import loading from '../loading.vue';
 
 const store = useStore();
 const router = useRouter();
@@ -62,6 +69,7 @@ const toast = useToast();
 // const dataCart = ref([]);
 const selectedProduct = ref();
 const payload = ref([]);
+const loadingPage = ref(false);
 
 const GetCart = async () => {
     try {
@@ -72,15 +80,11 @@ const GetCart = async () => {
     }
 };
 
-const Delete = () => {
-    const idsPayload = [];
-    for (let item of selectedProduct.value) {
-        let ids = item.book._id;
-        idsPayload.push(ids);
-    }
-    store.dispatch('cart/removeProduct', idsPayload).then((res) => {
-        toast.add({ severity: 'success', summary: res.type, detail: res.message, life: 3000 });
-        GetCart();
+const Delete = (id) => {
+    store.dispatch('cart/removeProduct', id).then((res) => {
+        loadingPage.value = true;
+        // GetCart();
+        window.location.reload();
     });
 };
 
@@ -96,18 +100,27 @@ const Update = () => {
     }
 
     if (payloadData.length > 0) {
-        store.dispatch('cart/addToCart', payloadData).then((res) => {
-            toast.add({ severity: 'success', summary: res.type, detail: res.message, life: 3000 });
+        store.dispatch('cart/updateToCart', payloadData).then((res) => {
+            loadingPage.value = true;
+            window.location.reload();
         });
     }
 };
 
 const ClickQuantity = (action, data, index) => {
     if (action == 'a') {
-        data.quantity += 1;
-    } else {
-        if (data.quantity >= 1) {
+        if (data.book.quantity > data.quantity) {
+            data.quantity += 1;
+        } else {
+            toast.add({ severity: 'error', summary: 'Lỗi số lượng', detail: 'Số lượng không đủ', life: 3000 });
+        }
+    }
+
+    if (action == 'm') {
+        if (data.quantity >= 2) {
             data.quantity -= 1;
+        } else {
+            toast.add({ severity: 'error', summary: 'Lỗi số lượng', detail: 'Số lượng quá ít. Vui lòng nhập số lượng >= 1', life: 3000 });
         }
     }
 };
@@ -118,9 +131,9 @@ onMounted(() => {
 const totalAmount = computed(() => {
     let total = 0;
     for (let item of payload.value) {
-        total += item.book.price * item.quantity;
+        total += ((item.book.price * (100 - item.book.discount)) / 100) * item.quantity;
     }
-    return total;
+    return currency(total, { symbol: 'đ', separator: ',' }).format();
 });
 const checkout = async () => {
     const res = await API.create('checkout');

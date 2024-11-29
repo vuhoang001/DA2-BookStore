@@ -62,6 +62,7 @@
             <div class="flex flex-col gap-3 mb-6">
                 <label for="bio" class="font-semibold">Tiểu sử</label>
                 <Textarea style="height: 10rem" v-model="payloadDialog.bio"></Textarea>
+                <!-- <Editor v-model="value" editorStyle="height: 320px" /> -->
             </div>
 
             <div class="flex flex-row items-center gap-3 mb-4">
@@ -70,7 +71,8 @@
             </div>
 
             <div class="flex justify-end gap-3 mb-4">
-                <Button label="Hủy" severity="secondary" @click="resetForm()"></Button>
+                <Button label="Hủy" severity="secondary" @click="toggleDialog = false"></Button>
+                <!-- <Button label="Hủy" severity="secondary" @click="resetForm()"></Button> -->
                 <Button label="Lưu" severity="success" @click="saveDialog(currentDialogMode)"></Button>
             </div>
         </template>
@@ -93,7 +95,7 @@ const payloadDialog = ref({
     _id: '',
     authorName: '',
     bio: '',
-    authorImage: null,
+    authorImage: '',
     slug: ''
 });
 const clearDialogData = JSON.stringify(payloadDialog.value);
@@ -151,6 +153,16 @@ const filteredAuthor = computed(() => {
         return item._id.toLowerCase().includes(filterAuthor.value.toLowerCase()) || item.authorName.toLowerCase().includes(filterAuthor.value.toLowerCase()) || item.bio.toLowerCase().includes(filterAuthor.value.toLowerCase());
     });
 });
+const validate = () => {
+    const fields = ['authorName', 'bio', 'authorImage'];
+    for (var field of fields) {
+        if (typeof payloadDialog.value[field] == 'string' && payloadDialog.value[field] == '') {
+            toast.add({ severity: 'error', summary: 'Lỗi', detail: ' Nhập thiếu trường! Vui lòng nhập đầy đủ!', life: 3000 });
+            return false;
+        }
+    }
+    return true;
+};
 
 const openDialog = (mode, data = null) => {
     toggleDialog.value = true;
@@ -171,6 +183,10 @@ const UploadFileLocal = async (event, index) => {
 };
 
 const saveDialog = async (mode) => {
+    if (!validate()) {
+        toggleDialog.value = true;
+        return;
+    }
     let formData = new FormData();
     const fields = ['authorName', 'bio'];
 

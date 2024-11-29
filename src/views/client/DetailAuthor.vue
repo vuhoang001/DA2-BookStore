@@ -15,7 +15,7 @@
             </div>
         </div>
 
-        <Paginator @page="onPageChange" @row-per-page-change="onRowsPageChange(event)" :rows="10" :totalRecords="120" :rowsPerPageOptions="[10, 20, 30]"></Paginator>
+        <!-- <Paginator @page="onPageChange" @row-per-page-change="onRowsPageChange(event)" :rows="10" :totalRecords="120" :rowsPerPageOptions="[10, 20, 30]"></Paginator> -->
     </div>
 </template>
 
@@ -24,9 +24,9 @@ import { ref, onBeforeMount } from 'vue';
 import API from '../../api/api-main';
 
 const authors = ref([]);
-const GetAuthors = async (page = 1, rows = 10) => {
+const GetAuthors = async () => {
     try {
-        const res = await API.get(`author?skip=${page}&limit=${rows}`);
+        const res = await API.get(`author`);
         authors.value = res.data.metadata;
     } catch (error) {}
 };

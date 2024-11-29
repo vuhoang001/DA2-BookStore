@@ -50,6 +50,21 @@ const router = createRouter({
                         middleware: [auth]
                     },
                     component: () => import('@/views/client/Checkout.vue')
+                },
+                {
+                    path: '/books',
+                    name: 'books',
+                    component: () => import('@/views/client/BookClient.vue')
+                },
+                {
+                    path: '/profile',
+                    name: 'profile',
+                    component: () => import('@/views/client/Profile.vue')
+                },
+                {
+                    path: '/favorite',
+                    name: 'favorite',
+                    component: import('@/views/client/Favorite.vue')
                 }
             ]
         },
@@ -99,6 +114,11 @@ const router = createRouter({
                     path: 'customer-manager',
                     name: 'CustomerManager',
                     component: () => import('@/views/admin/CustomerManager.vue')
+                },
+                {
+                    path: 'discount',
+                    name: 'discount',
+                    component: () => import('@/views/admin/Discount.vue')
                 }
             ]
         },

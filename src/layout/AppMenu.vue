@@ -10,6 +10,7 @@ const model = ref([
             { label: 'Quản lý sách', icon: 'pi pi-book', to: '/admin/book-manager' },
             { label: 'Quản lý tác giả', icon: 'pi pi-user', to: '/admin/author-manager' },
             { label: 'Quản lý thể loại', icon: 'pi pi-list', to: '/admin/genre-manager' },
+            { label: 'Quản lý khuyến mãi', icon: 'pi pi-dollar', to: '/admin/discount' },
             { label: 'Quản lý đơn hàng', icon: 'pi pi-shopping-cart', to: '/admin/cart-manager' },
             { label: 'Quản lý nội dung', icon: 'pi pi-file', to: '/admin/content-manager' },
             { label: 'Quản lý khách hàng', icon: 'pi pi-users', to: '/admin/customer-manager' },

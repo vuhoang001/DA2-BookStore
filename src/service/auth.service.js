@@ -16,6 +16,7 @@ class AuthServices {
 
     funcLoggout() {
         localStorage.removeItem('user');
+        return axios.post()
     }
     funRegister(user) {
         return axios.post(api + 'signup', user).then((res) => {
