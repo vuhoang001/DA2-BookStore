@@ -94,6 +94,7 @@ const Update = () => {
         let item = {};
         item.productId = payload.value[index].book._id;
         item.quantity = payload.value[index].quantity;
+        item.price = payload.value[index].book.price * ((100 - payload.value[index].book.discount) / 100) * payload.value[index].quantity;
         if (item.quantity !== 0) {
             payloadData.push(item);
         }
@@ -137,6 +138,10 @@ const totalAmount = computed(() => {
 });
 const checkout = async () => {
     const res = await API.create('checkout');
-    router.push({ name: 'checkout' });
+    if (res) {
+        router.push({ name: 'checkout' });
+    } else {
+        toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Giỏ hàng không có sản phẩm.', life: 3000 });
+    }
 };
 </script>

@@ -99,6 +99,7 @@ const loadingPage = ref(false);
 // idSanpham, tenSanPham, soLuong
 const payload = ref({
     tenSanPham: '',
+    price: '',
     quantity: 1
 });
 
@@ -140,9 +141,10 @@ const addCart = async (detailBook, action) => {
         });
         return;
     }
+
     try {
-        // const res = await API.create('cart/add?a=1', [{ productId: detailBook._id, quantity: payload.value.quantity }]);
-        store.dispatch('cart/addToCart', [{ productId: detailBook._id, quantity: payload.value.quantity }]).then((res) => {
+        const total = detailBook.price * ((100 - detailBook.discount) / 100) * payload.value.quantity;
+        store.dispatch('cart/addToCart', [{ productId: detailBook._id, quantity: payload.value.quantity, price: total }]).then((res) => {
             if (res) {
                 loadingPage.value = true;
                 if (action == 'A') {

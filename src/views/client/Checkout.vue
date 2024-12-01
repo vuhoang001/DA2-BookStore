@@ -8,22 +8,29 @@
                 <div>
                     <span class="text-2xl">Thông tin thanh toán</span>
                 </div>
-                <div class="flex flex-col">
-                    <span class="text-base text-gray-500">{{ user.email }} </span>
-                    <span class="text-base text-blue-400 hover:underline cursor-pointer"> Đăng xuất</span>
+                <div class="flex">
+                    <div>
+                        <router-link :to="{ name: 'profile' }">
+                            <img crossorigin="anonymous" :src="user.thumbnail" class="w-[65px] h-[65px] rounded-md" alt="" />
+                        </router-link>
+                    </div>
+                    <div class="flex flex-col justify-center ml-3">
+                        <router-link :to="{ name: 'profile' }">
+                            <span class="text-gray-500 text-lg">{{ user.email }} </span>
+                        </router-link>
+                        <span class="text-base text-blue-300 italic hover:underline cursor-pointer"> Đăng xuất</span>
+                    </div>
                 </div>
 
-                <div class="flex flex-col gap-5">
-                    <InputText class="w-full" type="text" v-model="payload.name" placeholder="Họ và tên" />
-                    <InputText class="w-full" type="text" v-model="payload.phone" placeholder="Số điện thoại" />
-                    <InputText class="w-full" type="text" v-model="payload.address" placeholder="Địa chỉ" />
+                <div class="flex flex-col gap-5 mt-5">
+                    <router-link class="text-right" :to="{ name: 'profile' }">
+                        <span class="text-right text-green-500 cursor-pointer hover:underline">Chỉnh sửa địa chỉ <i class="pi pi-link"></i></span>
+                    </router-link>
+                    <InputText class="w-full" type="text" v-model="user.name" placeholder="Họ và tên" />
+                    <InputText class="w-full" type="text" v-model="user.phone" placeholder="Số điện thoại" />
+                    <InputText class="w-full" type="text" v-model="user.address" placeholder="Địa chỉ" />
                 </div>
 
-                <div class="flex gap-4">
-                    <Select v-model="selectedCity" :options="cities" option-label="province_name" placeholder="Chọn thành phố" @change="onChangeCities" class="w-full"></Select>
-                    <Select v-model="selectedDistrict" placeholder="Chọn quận/huyện" :options="districts" @change="onChangeDistrict" option-label="district_name" class="w-full"></Select>
-                    <Select v-model="selectedWards" placeholder="Chọn phường/xã" :options="wards" option-label="ward_name" class="w-full"></Select>
-                </div>
                 <div class="my-3">
                     <span class="text-2xl">Phương thức thanh toán</span>
                 </div>
@@ -75,11 +82,6 @@
                         <span class="text-lg text-gray-400">Tạm tính</span>
                         <span class="text-lg">{{ currency(payload.totalAmount, { symbol: 'đ', separator: ',' }).format() }}</span>
                     </div>
-                    <!-- <div class="flex justify-between">
-                        <span class="text-lg text-gray-400">Phí ship</span>
-                        <span v-if="payload.paymentMethod == 'T'" class="text-lg">-</span>
-                        <span v-else class="text-lg">đ35,000.00</span>
-                    </div> -->
                 </div>
 
                 <Divider></Divider>
@@ -105,14 +107,8 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const user = ref({});
-const selectedCity = ref();
-const cities = ref();
-const selectedDistrict = ref();
-const districts = ref();
-const selectedWards = ref();
 const orderId = ref();
 const orderData = ref();
-const wards = ref();
 
 const payload = ref({
     name: '',
@@ -133,35 +129,23 @@ const payment = async () => {
     }
 
     if (payload.value.paymentMethod === 'T') {
-        payload.value.address += ', ' + selectedWards.value.ward_name + ', ' + selectedDistrict.value.district_name + ', ' + selectedCity.value.province_name;
-
+        payload.value.address = user.value.address;
+        payload.value.name = user.value.name;
+        payload.value.phoneReceive = user.value.phone;
         const res = await API.create('payment?type=t', { items: array, total: payload.value.totalAmount, payload: payload.value, orderId: orderId.value });
 
         if (res.data.metadata.return_code == 1) {
             window.location.href = res.data.metadata.order_url;
         }
     } else {
+        payload.value.address = user.value.address;
+        payload.value.name = user.value.name;
+        payload.value.phoneReceive = user.value.phone;
         const res = await API.create('payment?type=c', { items: array, total: payload.value.totalAmount, payload: payload.value, orderId: orderId.value });
         if (res && res.status == 200) {
             router.push({ name: 'paymentsuccess' });
         }
     }
-};
-
-const GetCity = async () => {
-    const res = await API.get('address');
-    cities.value = res.data.metadata;
-};
-
-const onChangeCities = async () => {
-    const res = await API.get(`address/district/${selectedCity.value.province_id}`);
-    districts.value = res.data.metadata;
-};
-
-const onChangeDistrict = async () => {
-    const res = await API.get(`address/ward/${selectedDistrict.value.district_id}`);
-    wards.value = res.data.metadata;
-    console.log(wards.value);
 };
 
 const GetOrder = async () => {
@@ -171,7 +155,6 @@ const GetOrder = async () => {
     orderData.value = res.data;
     user.value = res.data.metadata.user;
     orderData.value = res.data.metadata.products;
-    console.log(orderData.value);
     totalAmount();
 };
 
@@ -185,6 +168,5 @@ const totalAmount = () => {
 
 onBeforeMount(() => {
     GetOrder();
-    GetCity();
 });
 </script>
