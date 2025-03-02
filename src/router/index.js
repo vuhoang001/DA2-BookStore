@@ -59,6 +59,9 @@ const router = createRouter({
                 {
                     path: '/profile',
                     name: 'profile',
+                    meta: {
+                        middleware: [auth]
+                    },
                     component: () => import('@/views/client/Profile.vue')
                 },
                 {

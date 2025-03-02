@@ -127,6 +127,7 @@ const ClickQuantity = (action, data, index) => {
 };
 
 onMounted(() => {
+    console.log(store.state.auth.status.loggedIn)
     GetCart();
 });
 const totalAmount = computed(() => {

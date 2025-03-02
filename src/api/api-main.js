@@ -8,7 +8,7 @@ class API {
         try {
             const res = await axios.get(url, {
                 headers: authHeader(),
-                timeout: 5000
+                timeout: 10000
             });
             return res;
         } catch (error) {

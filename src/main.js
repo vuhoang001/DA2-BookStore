@@ -12,10 +12,13 @@ import '@/assets/styles.scss';
 import '@/assets/tailwind.css';
 import loading from './views/loading.vue';
 
+import { createPinia } from 'pinia';
+
 const app = createApp(App);
 
 app.component('loading', loading);
 
+app.use(createPinia());
 app.use(router);
 app.use(store);
 app.use(PrimeVue, {

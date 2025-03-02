@@ -18,17 +18,6 @@ class CartService {
     }
 
     async updateProductToCart(payload) {
-        // return axios
-        //     .post(api + `cart/add?a=0`, payload, {
-        //         headers: authHeader(),
-        //         timeout: 10000
-        //     })
-        //     .then((res) => {
-        //         if (res.data) {
-        //             console.log('Update product to cart success');
-        //         }
-        //     });
-
         try {
             const response = await axios.post(api + `cart/add?a=0`, payload, {
                 headers: authHeader(),
@@ -44,18 +33,6 @@ class CartService {
     }
 
     async removeProductToCart(ids) {
-        // return axios
-        //     .post(api + 'cart/remove', ids, {
-        //         headers: authHeader(),
-        //         timeout: 10000,
-        //         data: { ids }
-        //     })
-        //     .then((res) => {
-        //         if (res.data) {
-        //         }
-        //         return res.data;
-        //     });
-
         try {
             const response = await axios.post(
                 api + 'cart/remove',

@@ -1,5 +1,4 @@
 import cartService from '@/service/cart.service';
-import { ref } from 'vue';
 const initalState = {
     items: [],
     total: 0,
