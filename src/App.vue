@@ -1,7 +1,5 @@
 <script setup>
-import currency from 'currency.js';
 import { useToast } from 'primevue/usetoast';
-const toast = useToast();
 </script>
 
 <template>

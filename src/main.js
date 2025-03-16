@@ -11,6 +11,7 @@ import ToastService from 'primevue/toastservice';
 import '@/assets/styles.scss';
 import '@/assets/tailwind.css';
 import loading from './views/loading.vue';
+import permisson from './directives/permisson';
 
 import { createPinia } from 'pinia';
 
@@ -31,5 +32,6 @@ app.use(PrimeVue, {
 });
 app.use(ToastService);
 app.use(ConfirmationService);
+app.directive('permisson', permisson);
 
 app.mount('#app');
